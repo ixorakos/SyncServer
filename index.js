@@ -14,12 +14,11 @@ const gameServer = new colyseus.Server({
 // Register ChatRoom as "chat"
 gameServer.register("chat", ChatRoom);
 
-app.get("/something", function (req, res) {
-  console.log("something!", process.pid);
-  res.send("Hey!");
+app.get("/test", function (req, res) {
+  res.send("Syncserver up and running: " + process.pid);
 });
 
 // Listen on specified PORT number
 gameServer.listen(PORT);
 
-console.log("Running on ws://localhost:" + PORT);
+console.log("Syncserver up and running: " + process.pid + " on port: " + PORT);
