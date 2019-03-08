@@ -5,6 +5,10 @@ class ChatRoom extends Room {
   constructor () {
     super();
 
+    this.syncStart = 0;
+    this.syncFirstClient = 0;
+    this.syncToReport = 0;
+
     this.setState({
       players: {},
       messages: []
@@ -37,23 +41,31 @@ class ChatRoom extends Room {
     switch(data.action)
     {
       case "master_sync":
+        this.syncStart = Date.now();
+        this.syncFirstClient = 1;
+        this.syncToReport = 0;
+
         data["slave_count"] = Object.keys(this.state.players).length;
+        data["sync_diff"] = this.syncToReport;
         this.broadcast(data);
+
         break;
+      case "slave_sync":
+        if (this.syncFirstClient === 1) {
+          this.syncFirstClient = 0;
+          this.syncToReport = Math.abs(this.syncStart - Date.now());
+          console.log("sync: " + this.syncToReport);
+
+          data["slave_count"] = Object.keys(this.state.players).length;
+          data["sync_diff"] = this.syncToReport;
+          this.broadcast(data);
+
+        }
+        break;
+
     }
 
-
-    //let player = this.state.players[client.sessionId];
-
-    console.log("data received: " + JSON.stringify(data)); 
-    
-
-    //console.log(data, "received from", client.sessionId, " x ", player.x);
-
-    //this.state.messages.push(client.sessionId + " sent " + data);
-    //this.state.players[client.sessionId].x += 0.01
-
-    
+    //console.log("data received: " + JSON.stringify(data));
   }
 
   update () {

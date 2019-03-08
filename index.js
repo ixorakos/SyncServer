@@ -4,7 +4,7 @@ const express = require("express");
 const colyseus = require("colyseus");
 const ChatRoom = require('./chat_room');
 
-const PORT = process.env.PORT || 8080;
+const PORT = 8081;
 
 const app = new express();
 const gameServer = new colyseus.Server({
